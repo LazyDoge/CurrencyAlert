@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="ingenuity.sky.currencyalert.MainActivity">
+    <item android:title="@string/action_settings1">
+        <menu
+        >
+            <item android:title="@string/rub" android:id="@+id/setRub"/>
+            <item android:title="@string/hrivna" android:id="@+id/setHriv"/>
+            <item android:title="@string/bella_rubl" android:id="@+id/setBel"/>
+        </menu>
+    </item>
+    <item android:title="@string/action_settings2">
+        <menu
+        >
+            <item android:title="@string/every_1_min" android:id="@+id/set1m"/>
+            <item android:title="@string/every_15_min" android:id="@+id/set15m"/>
+            <item android:title="@string/every_hour" android:id="@+id/set1h"/>
+            <item android:title="@string/every_3_hour" android:id="@+id/set3h"/>
+        </menu>
+    </item>
+    <item android:title="EXIT" android:onClick="getHelpClick"
+          android:icon="@android:drawable/ic_menu_help" app:showAsAction="ifRoom"/>
+</menu>

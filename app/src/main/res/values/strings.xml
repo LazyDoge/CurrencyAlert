@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Сигнал $0$</string>
+    <string name="action_settings1">Ваша валюта</string>
+    <string name="action_settings2">Частота проверки</string>
+    <string name="usd">USD</string>
+    <string name="minValue">0</string>
+    <string name="current">####</string>
+    <string name="maxValue">99999</string>
+    <string name="currency_code">Валюта</string>
+    <string name="low_border">Нижн. гр.</string>
+    <string name="hi_border">Верх. гр.</string>
+    <string name="current_value">Текущее</string>
+    <string name="switch_value">Вкл?</string>
+    <string name="rub">RUB</string>
+    <string name="_99999">99999</string>
+    <string name="_0">0</string>
+    <string name="hrivna">UAH</string>
+    <string name="bella_rubl">BYN</string>
+    <string name="every_15_min">15 минут</string>
+    <string name="every_hour">1 час</string>
+    <string name="every_3_hour">3 часа</string>
+    <string name="toggle_off">Сервис OFF</string>
+    <string name="toggle_on">Сервис ON</string>
+    <string name="every_1_min">1 минута</string>
+    <string name="xbt">XBT$</string>
+    <string name="eur">EUR</string>
+    <string name="oil">OIL$</string>
+</resources>
