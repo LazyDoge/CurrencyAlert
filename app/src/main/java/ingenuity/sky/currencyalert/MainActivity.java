@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -36,6 +37,14 @@ public class MainActivity extends AppCompatActivity {
     static EditText OILEditMin;
     static EditText OILEditMax;
     static Switch OILSwitch;
+    static TextView RUBText;
+    static EditText RUBEditMin;
+    static EditText RUBEditMax;
+    static Switch RUBSwitch;
+    static TextView ETHText;
+    static EditText ETHEditMin;
+    static EditText ETHEditMax;
+    static Switch ETHSwitch;
 
     static TextView textViewMainCurrency;
     static SharedPreferences localPreferences;
@@ -62,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
         XBTUIInit();
         EURUIInit();
         OILUIInit();
+        RUBUIInit();
+        ETHUIInit();
 
 
         textViewMainCurrency = (TextView) findViewById(R.id.textView);
@@ -86,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        fadeDataRestore();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +113,51 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
             }
         });
+    }
+
+    private void fadeDataRestore() {
+        float usDvalue = localPreferences.getFloat("usdvalue", 0);
+        if (usDvalue == 0) {
+            usdText.setText("####");
+        }
+        usdText.setText(String.valueOf(usDvalue));
+        usdText.setTextColor(Color.GRAY);
+
+
+        float euRvalue = localPreferences.getFloat("EURvalue", 0);
+        if (euRvalue == 0) {
+            EURText.setText("####");
+        }
+        EURText.setText(String.valueOf(euRvalue));
+        EURText.setTextColor(Color.GRAY);
+
+        float ruBvalue = localPreferences.getFloat("RUBvalue", 0);
+        if (ruBvalue == 0) {
+            RUBText.setText("####");
+        }
+        RUBText.setText(String.valueOf(ruBvalue));
+        RUBText.setTextColor(Color.GRAY);
+
+        float xbTvalue = localPreferences.getFloat("XBTvalue", 0);
+        if (xbTvalue == 0) {
+            XBTText.setText("####");
+        }
+        XBTText.setText(String.valueOf(xbTvalue));
+        XBTText.setTextColor(Color.GRAY);
+
+        float etHvalue = localPreferences.getFloat("ETHvalue", 0);
+        if (etHvalue == 0) {
+            ETHText.setText("####");
+        }
+        ETHText.setText(String.valueOf(etHvalue));
+        ETHText.setTextColor(Color.GRAY);
+
+        float oiLvalue = localPreferences.getFloat("OILvalue", 0);
+        if (oiLvalue == 0) {
+            OILText.setText("####");
+        }
+        OILText.setText(String.valueOf(oiLvalue));
+        OILText.setTextColor(Color.GRAY);
     }
 
     private void usdUIInit() {
@@ -195,6 +252,51 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void ETHUIInit() {
+        ETHText = (TextView) findViewById(R.id.ETHValueText);
+        ETHEditMin = (EditText) findViewById(R.id.editTextETHMin);
+        float ETHmin = localPreferences.getFloat("ETHmin", 0);
+        ETHEditMin.setText(String.valueOf(ETHmin));
+        ETHEditMin.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                ETHDisactivate(v);
+                return false;
+            }
+
+        });
+
+        ETHEditMax = (EditText) findViewById(R.id.editTextETHMax);
+        float ETHmax = localPreferences.getFloat("ETHmax", 99999);
+        ETHEditMax.setText(String.valueOf(ETHmax));
+        ETHEditMax.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                ETHDisactivate(v);
+                return false;
+            }
+        });
+        ETHSwitch = (Switch) findViewById(R.id.switchETH);
+        ETHSwitch.setChecked(localPreferences.getBoolean("ETH_is_active", false));
+
+        ETHSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    ETH.isActive = true;
+                    localPreferences.edit().putBoolean("ETH_is_active", true).apply();
+                    localPreferences.edit().putFloat("ETHmin", (float) Double.parseDouble(ETHEditMin.getText().toString())).apply();
+
+                    localPreferences.edit().putFloat("ETHmax", (float) Double.parseDouble(ETHEditMax.getText().toString())).apply();
+
+                } else {
+                    ETH.isActive = false;
+                    localPreferences.edit().putBoolean("ETH_is_active", false).apply();
+
+                }
+            }
+        });
+    }
 
     private void OILUIInit() {
         OILText = (TextView) findViewById(R.id.OILValueText);
@@ -242,6 +344,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     private void EURUIInit() {
         EURText = (TextView) findViewById(R.id.EURValueText);
         EUREditMin = (EditText) findViewById(R.id.editTextEURMin);
@@ -288,11 +391,89 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void RUBUIInit() {
+        RUBText = (TextView) findViewById(R.id.RUBValueText);
+//        RUBText.setBackgroundColor(Color.WHITE);
+        RUBEditMin = (EditText) findViewById(R.id.editTextRUBMin);
+        float RUBmin = localPreferences.getFloat("RUBmin", 0);
+        RUBEditMin.setText(String.valueOf(RUBmin));
+        RUBEditMin.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                RUBDisactivate(v);
+                return false;
+            }
+
+        });
+
+        RUBEditMax = (EditText) findViewById(R.id.editTextRUBMax);
+        float RUBmax = localPreferences.getFloat("RUBmax", 99999);
+        RUBEditMax.setText(String.valueOf(RUBmax));
+        RUBEditMax.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                RUBDisactivate(v);
+                return false;
+            }
+        });
+        RUBSwitch = (Switch) findViewById(R.id.switchRUB);
+        RUBSwitch.setChecked(localPreferences.getBoolean("RUB_is_active", false));
+
+        RUBSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    RUB.isActive = true;
+                    localPreferences.edit().putBoolean("RUB_is_active", true).apply();
+                    localPreferences.edit().putFloat("RUBmin", (float) Double.parseDouble(RUBEditMin.getText().toString())).apply();
+
+                    localPreferences.edit().putFloat("RUBmax", (float) Double.parseDouble(RUBEditMax.getText().toString())).apply();
+
+                } else {
+                    RUB.isActive = false;
+                    localPreferences.edit().putBoolean("RUB_is_active", false).apply();
+
+                }
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        localPreferencesInit(getApplicationContext());
+
+
+        int period = localPreferences.getInt("period", 180);
+        switch (period) {
+            case 1:
+                menu.getItem(1).getSubMenu().getItem(0).setChecked(true);
+                break;
+            case 5:
+                menu.getItem(1).getSubMenu().getItem(1).setChecked(true);
+                break;
+
+            case 15:
+                menu.getItem(1).getSubMenu().getItem(2).setChecked(true);
+                break;
+
+            case 30:
+                menu.getItem(1).getSubMenu().getItem(3).setChecked(true);
+                break;
+
+            case 60:
+                menu.getItem(1).getSubMenu().getItem(4).setChecked(true);
+                break;
+            case 120:
+                menu.getItem(1).getSubMenu().getItem(5).setChecked(true);
+                break;
+            case 180:
+                menu.getItem(1).getSubMenu().getItem(6).setChecked(true);
+                break;
+
+        }
         return true;
     }
 
@@ -317,17 +498,70 @@ public class MainActivity extends AppCompatActivity {
                 textViewMainCurrency.setText("BYN");
                 localPreferences.edit().putString("to", "BYN").apply();
                 break;
+            case R.id.setKZT:
+                textViewMainCurrency.setText("KZT");
+                localPreferences.edit().putString("to", "KZT").apply();
+                break;
+            case R.id.setUsd:
+                textViewMainCurrency.setText("USD");
+                localPreferences.edit().putString("to", "USD").apply();
+                break;
+            case R.id.setEur:
+                textViewMainCurrency.setText("EUR");
+                localPreferences.edit().putString("to", "EUR").apply();
+                break;
             case R.id.set1m:
                 localPreferences.edit().putInt("period", 1).apply();
+                item.setChecked(true);
+                break;
+            case R.id.set5m:
+                localPreferences.edit().putInt("period", 5).apply();
+                item.setChecked(true);
                 break;
             case R.id.set15m:
                 localPreferences.edit().putInt("period", 15).apply();
+                item.setChecked(true);
+                break;
+            case R.id.set30m:
+                localPreferences.edit().putInt("period", 30).apply();
+                item.setChecked(true);
                 break;
             case R.id.set1h:
                 localPreferences.edit().putInt("period", 60).apply();
+                item.setChecked(true);
+                break;
+            case R.id.set2h:
+                localPreferences.edit().putInt("period", 120).apply();
+                item.setChecked(true);
                 break;
             case R.id.set3h:
                 localPreferences.edit().putInt("period", 180).apply();
+                item.setChecked(true);
+                break;
+            case R.id.setSoundOff:
+                localPreferences.edit().putInt("sound", 1).apply();
+                break;
+            case R.id.setSoundCoin:
+                localPreferences.edit().putInt("sound", 2).apply();
+                break;
+            case R.id.setSoundStan:
+                localPreferences.edit().putInt("sound", 3).apply();
+                break;
+            case R.id.setVibroOff:
+                localPreferences.edit().putInt("vibro", 1).apply();
+                break;
+            case R.id.setVibroShort:
+                localPreferences.edit().putInt("vibro", 2).apply();
+                break;
+            case R.id.setVibroStan:
+
+                localPreferences.edit().putInt("vibro", 3).apply();
+                break;
+            case R.id.setDiodOff:
+                localPreferences.edit().putInt("diod", 1).apply();
+                break;
+            case R.id.setDiodOn:
+                localPreferences.edit().putInt("diod", 2).apply();
                 break;
         }
 
@@ -348,12 +582,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     private void OILDisactivate(View v) {
         OILSwitch.setChecked(false);
         localPreferences.edit().putBoolean("OIL_is_active", false).apply();
 
     }
+
 
     private void EURDisactivate(View v) {
         EURSwitch.setChecked(false);
@@ -362,10 +596,25 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     private void XBTDisactivate(View v) {
 
         XBTSwitch.setChecked(false);
         localPreferences.edit().putBoolean("XBT_is_active", false).apply();
+ 
+
+    }
+
+    private void ETHDisactivate(View v) {
+        ETHSwitch.setChecked(false);
+        localPreferences.edit().putBoolean("ETH_is_active", false).apply();
+
+
+    }
+
+    private void RUBDisactivate(View v) {
+        RUBSwitch.setChecked(false);
+        localPreferences.edit().putBoolean("RUB_is_active", false).apply();
 
     }
 
@@ -381,12 +630,14 @@ public class MainActivity extends AppCompatActivity {
         builder.setTitle("Справка")
                 .setIcon(R.mipmap.ic_launcher)
 
-                .setMessage("RUB - рубль\r\n" +
+                .setMessage("RUB - рус. рубль (отображет отношенеие выбранной валюты к рус. рублю, для KZT -  обратное)\r\n" +
                         "UAH - гривна\n" +
                         "BYN - бел. рубль\n" +
+                        "KZT - казах. тенге\n" +
                         "USD - доллар США\r\n" +
                         "EUR - евро\n" +
                         "XBT$ - Bitcoin в долларах США\n" +
+                        "ETH$ - Ethereum в долларах США\n" +
                         "OIL$ - нефть Brent в долларах СШA\n" +
                         "\n" +
                         "Внимание: Не забудьте добавить это приложение в исключения вашего менеджера батареи и программы запрещающей автозагрузку для приложений, если таковые имеются.")

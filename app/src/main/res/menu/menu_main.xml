@@ -5,20 +5,56 @@
     <item android:title="@string/action_settings1">
         <menu
         >
+
             <item android:title="@string/rub" android:id="@+id/setRub"/>
             <item android:title="@string/hrivna" android:id="@+id/setHriv"/>
             <item android:title="@string/bella_rubl" android:id="@+id/setBel"/>
+            <item android:title="@string/kazah_tenge" android:id="@+id/setKZT"/>
+            <item android:title="@string/usd" android:id="@+id/setUsd"/>
+            <item android:title="@string/eur" android:id="@+id/setEur"/>
+
         </menu>
     </item>
     <item android:title="@string/action_settings2">
         <menu
         >
+            <group android:checkableBehavior="single">
             <item android:title="@string/every_1_min" android:id="@+id/set1m"/>
+            <item android:title="@string/every_5_min" android:id="@+id/set5m"/>
             <item android:title="@string/every_15_min" android:id="@+id/set15m"/>
+            <item android:title="@string/every_30_min" android:id="@+id/set30m"/>
             <item android:title="@string/every_hour" android:id="@+id/set1h"/>
+            <item android:title="@string/every_2_hour" android:id="@+id/set2h"/>
             <item android:title="@string/every_3_hour" android:id="@+id/set3h"/>
+            </group>
         </menu>
     </item>
-    <item android:title="EXIT" android:onClick="getHelpClick"
+    <item android:title="@string/strExit" android:onClick="getHelpClick"
           android:icon="@android:drawable/ic_menu_help" app:showAsAction="ifRoom"/>
+    <item android:title="@string/Settings">
+        <menu >
+            <item android:title="@string/stringSound" >
+                <menu>
+                    <item android:title="@string/stringSoundNon" android:id="@+id/setSoundOff"/>
+                    <item android:title="@string/stringSoundCoin" android:id="@+id/setSoundCoin"/>
+                    <item android:title="@string/stringSoundStandard" android:id="@+id/setSoundStan"/>
+                </menu>
+            </item>
+
+            <item android:title="@string/stringVibro" >
+                <menu>
+                    <item android:title="@string/stringNoVibro" android:id="@+id/setVibroOff"/>
+                    <item android:title="@string/strShortVibro" android:id="@+id/setVibroShort"/>
+                    <item android:title="@string/strStanVibro" android:id="@+id/setVibroStan"/>
+                </menu>
+            </item>
+            <item android:title="@string/strDiod" >
+                <menu>
+                    <item android:title="@string/strDiodOn" android:id="@+id/setDiodOn"/>
+                    <item android:title="@string/strDiodOff" android:id="@+id/setDiodOff"/>
+
+                </menu>
+            </item>
+        </menu>
+    </item>
 </menu>

@@ -13,7 +13,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:showIn="@layout/activity_main"
         tools:context="ingenuity.sky.currencyalert.MainActivity"
-        android:background="@drawable/currencyalertbackground">
+        android:background="@drawable/currencyalertbackground_light">
 
     <LinearLayout
             android:id="@+id/OILLinLayout"
@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_below="@+id/XBTLinLayout" android:layout_alignParentLeft="true"
+            android:layout_below="@+id/ETHLinLayout" android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true">
         <TextView
                 android:text="@string/oil"
@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content" android:id="@+id/OILValueText" android:layout_weight="2"
                 tools:text="@string/current"
                 android:textAppearance="@style/TextAppearance.AppCompat" android:fontFamily="serif-monospace"
-                android:textAlignment="center" android:textStyle="normal|bold"/>
+                android:textAlignment="center" android:textStyle="normal|bold" android:textColor="@android:color/black"/>
         <EditText
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
@@ -107,12 +107,58 @@
                 android:layout_height="wrap_content" android:id="@+id/switchEUR" android:layout_weight="0.3"/>
     </LinearLayout>
     <LinearLayout
-            android:id="@+id/XBTLinLayout"
+            android:id="@+id/RUBLinLayout"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
             android:layout_below="@+id/EURLinLayout" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+        <TextView
+                android:text="@string/rub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/textViewRUBname" android:layout_weight="0.85"
+                tools:text="@string/rub"
+                android:textAppearance="@style/TextAppearance.AppCompat"
+
+                android:textStyle="normal|bold"/>
+        <EditText
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"
+                android:id="@+id/editTextRUBMin" tools:text="@string/minValue" android:hint="0"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:textAlignment="center"
+        />
+        <TextView
+                android:text="@string/current"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/RUBValueText" android:layout_weight="2"
+                tools:text="@string/current"
+                android:textAppearance="@style/TextAppearance.AppCompat" android:fontFamily="serif-monospace"
+                android:textAlignment="center"
+                android:textStyle="normal|bold"/>
+        <EditText
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"
+                android:id="@+id/editTextRUBMax" tools:text="@string/maxValue" android:hint="99999"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:textAlignment="center"
+        />
+        <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/switchRUB" android:layout_weight="0.3"/>
+    </LinearLayout>
+    <LinearLayout
+            android:id="@+id/XBTLinLayout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@+id/RUBLinLayout" android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true">
         <TextView
                 android:text="@string/xbt"
@@ -149,6 +195,50 @@
         <Switch
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/switchXBT" android:layout_weight="0.3"/>
+    </LinearLayout>
+    <LinearLayout
+            android:id="@+id/ETHLinLayout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@+id/XBTLinLayout" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+        <TextView
+                android:text="@string/eth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/textViewETHname"
+                tools:text="@string/eth"
+                android:textAppearance="@style/TextAppearance.AppCompat" android:textStyle="normal|bold"
+                android:layout_weight="0.56"/>
+        <EditText
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"
+                android:id="@+id/editTextETHMin" tools:text="@string/minValue" android:hint="0"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:textAlignment="center"
+        />
+        <TextView
+                android:text="@string/current"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/ETHValueText" android:layout_weight="2"
+                tools:text="@string/current"
+                android:textAppearance="@style/TextAppearance.AppCompat" android:fontFamily="serif-monospace"
+                android:textAlignment="center" android:textStyle="normal|bold" android:textColor="@android:color/black"/>
+        <EditText
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"
+                android:id="@+id/editTextETHMax" tools:text="@string/maxValue" android:hint="99999"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:textAlignment="center"
+        />
+        <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/switchETH" android:layout_weight="0.3"/>
     </LinearLayout>
     <ToggleButton
             android:text="ToggleButton"
@@ -242,6 +332,27 @@
                 android:layout_height="wrap_content" android:id="@+id/switch1" android:layout_weight="0.3"
                 android:layout_width="wrap_content"/>
     </LinearLayout>
+    <TextView
+            android:text="Последняя проверка: "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp" android:id="@+id/textView2" android:layout_above="@+id/toggleButton"
+            android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
+            android:visibility="gone"/>
+    <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_alignBottom="@+id/textView2"
+            android:layout_toRightOf="@+id/textView2" android:layout_toEndOf="@+id/textView2"
+            android:layout_marginLeft="16dp" android:layout_marginStart="16dp" android:id="@+id/textView3"
+            android:visibility="gone"/>
+    <TextView
+            android:text="назад"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_alignBottom="@+id/textView3"
+            android:layout_toRightOf="@+id/textView3" android:layout_toEndOf="@+id/textView3"
+            android:layout_marginLeft="11dp" android:layout_marginStart="11dp" android:id="@+id/textView5"
+            android:visibility="gone"/>
 
 
 </RelativeLayout>

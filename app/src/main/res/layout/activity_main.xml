@@ -41,16 +41,19 @@
             android:layout_gravity="bottom|right" android:maxHeight="74dp" android:maxWidth="74dip"
             android:minHeight="74dp" android:minWidth="74dip" android:layout_marginRight="0dp"
             android:layout_marginBottom="0dp"/>
+
     <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <TextView
-                android:text="@string/rub"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="28dp" android:id="@+id/textView" android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"/>
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="28dp"
+            android:text="@string/rub" />
     </RelativeLayout>
 
 

@@ -3,6 +3,7 @@ package ingenuity.sky.currencyalert;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -11,15 +12,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,6 +37,7 @@ import java.util.concurrent.Future;
  * Created by saymon on 17.06.17.
  */
 public class AlarmEventReceiver extends BroadcastReceiver {
+    private static final String CHANNEL_ID = "1011";
     private static AlarmManager alarmManager;
     private static PendingIntent pendingIntent;
     static ArrayList<Currency> currencyList;
@@ -53,6 +62,14 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                 break;
             case "OIL":
                 currentTextView = MainActivity.OILText;
+                break;
+            case "RUB":
+                currentTextView = MainActivity.RUBText;
+                break;
+            case "ETH":
+                currentTextView = MainActivity.ETHText;
+                break;
+
         }
 
     }
@@ -69,7 +86,6 @@ public class AlarmEventReceiver extends BroadcastReceiver {
     }
 
     double aDoubleD;
-
 
 
     @SuppressWarnings("unchecked")
@@ -114,6 +130,8 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                         futures.add(executorService.submit((XECurrency) currency));
                     } else if (currency instanceof OIL) {
                         futures.add(executorService.submit((OIL) currency));
+                    } else if (currency instanceof ETH) {
+                        futures.add(executorService.submit((ETH) currency));
                     }
 
                 }
@@ -124,9 +142,9 @@ public class AlarmEventReceiver extends BroadcastReceiver {
 
 //                System.out.println(String.format("curr = %d  futur =%d", currencyList.size(), futures.size()));
 
+                boolean failure = false;
 
-
-                for (int i = 0; i<futures.size(); i++) {
+                for (int i = 0; i < futures.size(); i++) {
 
 
                     String name = currencyList.get(i).getName();
@@ -138,7 +156,7 @@ public class AlarmEventReceiver extends BroadcastReceiver {
 
                     }
 
-                    double lowBorder = localPreferences.getFloat(name +"min", 0);
+                    double lowBorder = localPreferences.getFloat(name + "min", 0);
                     double hiBorder = localPreferences.getFloat(name + "max", Integer.MAX_VALUE);
                     double current = -1;
                     try {
@@ -146,7 +164,6 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                         parsing = true;
                         new AsyncTask<Future<Double>, Void, Void>() {
                             private double aDouble;
-
 
 
                             @Override
@@ -182,8 +199,20 @@ public class AlarmEventReceiver extends BroadcastReceiver {
 
                                 try {
 
+                                    if (aDouble == -1.0 || aDouble == 0.0) {
+                                        currentTextView.setText("неудача");
 
-                                    currentTextView.setText(String.valueOf(aDouble));
+                                    } else {
+
+                                        if (aDouble < 1) {
+                                            currentTextView.setText(String.format("%(.4f", 1.0 / aDouble));
+
+                                        } else {
+
+                                            currentTextView.setText(String.valueOf(aDouble));
+                                        }
+
+                                    }
                                     MainActivity.progressBar.setVisibility(ProgressBar.INVISIBLE);
                                 } catch (Exception e) {
 
@@ -194,7 +223,6 @@ public class AlarmEventReceiver extends BroadcastReceiver {
 
 
                                 ////
-
 
 
                             }
@@ -215,29 +243,42 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                         //nop
                     }
 
-                    if (aDoubleD == -1.0 || aDoubleD == 0.0) {
-                        failCounter++;
-                        localPreferences.edit().putInt("fail", failCounter).apply();
-                        break;
-                    }
+                    changeTextColor(name);
 
+
+                    if (aDoubleD == -1.0 || aDoubleD == 0.0) {
+                        if (!failure) {
+                            failCounter++;
+                            localPreferences.edit().putInt("fail", failCounter).apply();
+                            failure = true;
+                        }
+                        continue;
+
+                    } else {
+                        localPreferences.edit().putFloat(name + "value", (float) aDoubleD).apply();
+                    }
 
                     if (aDoubleD < lowBorder || aDoubleD > hiBorder) {
                         notificationNeeded = true;
-                        contentText.append(name.toUpperCase()).append(" = ").append(aDoubleD).append("\r\n");
+                        if (aDoubleD < 1) {
+                            contentText.append(name.toUpperCase()).append(" = ").append(String.format("%(.4f", 1.0 / aDoubleD)).append("\r\n");
+
+                        } else {
+
+                            contentText.append(name.toUpperCase()).append(" = ").append(aDoubleD).append("\r\n");
+                        }
                         contentTitle = "Валюта вышла за границы!";
 
                     }
 
 
-                    if (i == futures.size() - 1 && !notificationNeeded) {
+                    if (i == futures.size() - 1 && !failure) {
                         failCounter = 0;
                         localPreferences.edit().putInt("fail", failCounter).apply();
                     }
 
+
                 }
-
-
 
 
                 if (period == 0) {
@@ -256,18 +297,43 @@ public class AlarmEventReceiver extends BroadcastReceiver {
 
                 }
 
+
                 wakeLock.release();
 
             }
         }).start();
 
 
+    }
 
+    private void changeTextColor(String name) {
+        if (aDoubleD == -1.0 || aDoubleD == 0.0) {
+            return;
+        }
+        try {
+            float aFloat = localPreferences.getFloat(name + "value", (float) aDoubleD);
+            float aDouble = (float) aDoubleD;
 
+            if (aDouble < 1) {
+                aDouble = 1 / aDouble;
+            }
+            if (aFloat < 1) {
+                aFloat = 1 / aFloat;
+            }
 
+//            if (new BigDecimal(aDouble).setScale(1, RoundingMode.UP).equals(new BigDecimal(aFloat).setScale(1, RoundingMode.UP))) {
+            if (String.valueOf(aDouble).equals(String.valueOf(aFloat))) {
+                currentTextView.setTextColor(Color.BLACK);
 
+            } else if (aDouble > aFloat) {
+                currentTextView.setTextColor(Color.parseColor("#00897B"));
+            } else if (aDouble < aFloat) {
+                currentTextView.setTextColor(Color.parseColor("#FF5722"));
+            }
 
+        } catch (Exception e) {
 
+        }
     }
 
 
@@ -276,13 +342,35 @@ public class AlarmEventReceiver extends BroadcastReceiver {
         Intent notficationIntent = new Intent(context, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notficationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         Resources resources = context.getResources();
-        Notification.Builder builder = new Notification.Builder(context);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification.Builder builder = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+            CharSequence name = "signal $O$";
+            String description = "testChannell for 26+";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+                        // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+//                NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+
+
+            builder = new Notification.Builder(context, CHANNEL_ID);
+        } else {
+            builder = new Notification.Builder(context);
+
+        }
 
 //        int icon = R.mipmap.ic_launcher;
         builder.setWhen(System.currentTimeMillis())
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
-//                .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
+//                .setLights(Color.GREEN, 1000, 1000)
+//                .setColor(Color.GREEN)
+                .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentText(contentText.toString())
                 .setContentTitle(contentTitle);
@@ -291,9 +379,58 @@ public class AlarmEventReceiver extends BroadcastReceiver {
         }
 
 
+
         Notification notification = builder.build();
-        notification.defaults = Notification.DEFAULT_ALL;
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+
+//        Log.d("soundGetter  ", String.valueOf(soundGetter));
+//        Log.d("vibroGetter  ", String.valueOf(vibroGetter));
+//        Log.d("diodGetter  ", String.valueOf(diodGetter));
+//        for (Map.Entry<String, ?> entry :
+//                localPreferences.getAll().entrySet()) {
+//            System.out.println(entry.toString());
+//        }
+
+//        System.out.println(localPreferences.toString());
+        localPreferencesInit(context);
+        int soundGetter = localPreferences.getInt("sound", 2);
+        int vibroGetter = localPreferences.getInt("vibro", 2);
+        int diodGetter = localPreferences.getInt("diod", 1);
+
+
+        switch (soundGetter) {
+            case 2:
+                notification.sound = Uri.parse("android.resource://" + context.getPackageName() + "/raw/sound_2");
+                break;
+            case 3:
+                notification.defaults = Notification.DEFAULT_SOUND;
+                break;
+        }
+
+        switch (vibroGetter) {
+            case 2:
+                notification.vibrate = new long[]{0, 150, 0};
+                break;
+            case 3:
+                notification.defaults = Notification.DEFAULT_VIBRATE;
+                break;
+        }
+
+        switch (diodGetter) {
+            case 2:
+                notification.ledARGB = Color.GREEN;
+                notification.ledOffMS = 5000;
+                notification.ledOnMS = 500;
+                notification.flags = notification.flags | Notification.FLAG_SHOW_LIGHTS;
+        }
+
+
+
+
+//        notification.defaults =
+//        notification.sound = Uri.parse("android.resource://" + context.getPackageName() + "/raw/sound_2");
+
+
         miuiIconNormalize(notification);
         notificationManager.notify(101, notification);
     }
@@ -341,10 +478,23 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                 currencyList.add(xbt);
             }
 
-            OIL oil= new OIL("OIL");
+            OIL oil = new OIL("OIL");
             if (localPreferences.getBoolean("OIL_is_active", false)) {
 
                 currencyList.add(oil);
+            }
+
+            RUB rub = new RUB("RUB", to);
+            if (localPreferences.getBoolean("RUB_is_active", false)) {
+
+                currencyList.add(rub);
+            }
+
+            ETH eth = new ETH("ETH");
+
+            if (localPreferences.getBoolean("ETH_is_active", false)) {
+
+                currencyList.add(eth);
             }
         } catch (Exception e) {
             //nop
@@ -364,7 +514,6 @@ public class AlarmEventReceiver extends BroadcastReceiver {
             period = 180;
         }
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60 * 1000 * period, pendingIntent);
-
 
 
     }

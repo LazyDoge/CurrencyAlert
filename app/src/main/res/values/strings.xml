@@ -17,7 +17,10 @@
     <string name="hrivna">UAH</string>
     <string name="bella_rubl">BYN</string>
     <string name="every_15_min">15 минут</string>
+    <string name="every_30_min">30 минут</string>
+    <string name="every_5_min">5 минут</string>
     <string name="every_hour">1 час</string>
+    <string name="every_2_hour">2 часа</string>
     <string name="every_3_hour">3 часа</string>
     <string name="toggle_off">Сервис OFF</string>
     <string name="toggle_on">Сервис ON</string>
@@ -25,4 +28,19 @@
     <string name="xbt">XBT$</string>
     <string name="eur">EUR</string>
     <string name="oil">OIL$</string>
+    <string name="eth">ETH$</string>
+    <string name="kazah_tenge">KZT</string>
+    <string name="Settings">Настройки оповещения</string>
+    <string name="stringSound">Звук</string>
+    <string name="stringSoundNon">Без звука</string>
+    <string name="stringSoundCoin">Монета</string>
+    <string name="stringSoundStandard">Стандартный</string>
+    <string name="stringVibro">Вибрация</string>
+    <string name="stringNoVibro">Без вибрации</string>
+    <string name="strShortVibro">Короткая</string>
+    <string name="strStanVibro">Стандартная</string>
+    <string name="strDiod">Диод</string>
+    <string name="strDiodOn">Вкл</string>
+    <string name="strDiodOff">Выкл</string>
+    <string name="strExit">EXIT</string>
 </resources>

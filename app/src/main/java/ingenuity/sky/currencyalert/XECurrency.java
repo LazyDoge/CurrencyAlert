@@ -21,6 +21,7 @@ public class XECurrency extends  Currency implements Callable<Double> {
     public Double call() throws Exception {
         double resultAmount = -1;
         Document doc = Jsoup.connect(String.format("http://www.xe.com/currencyconverter/convert/?Amount=1&From=%s&To=%s", from, to)).userAgent(" Chrome/58.0.3029.81").timeout(5000).get();
+
         String resultAmountString = null;
         try {
             resultAmountString = doc.getElementsByClass("uccResultAmount").first().text();
@@ -30,6 +31,8 @@ public class XECurrency extends  Currency implements Callable<Double> {
         } catch (Exception e) {
             resultAmount = -1;
         }
+
+
 
 
         return resultAmount;
