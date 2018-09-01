@@ -128,10 +128,12 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                     ExecutorService executorService = Executors.newFixedThreadPool(2);
                     if (currency instanceof XECurrency) {
                         futures.add(executorService.submit((XECurrency) currency));
-                    } else if (currency instanceof OIL) {
-                        futures.add(executorService.submit((OIL) currency));
+                    } else if (currency instanceof XBT) {
+                        futures.add(executorService.submit((XBT) currency));
                     } else if (currency instanceof ETH) {
                         futures.add(executorService.submit((ETH) currency));
+                    } else if (currency instanceof OIL) {
+                        futures.add(executorService.submit((OIL) currency));
                     }
 
                 }
@@ -352,7 +354,7 @@ public class AlarmEventReceiver extends BroadcastReceiver {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
 
-                        // Register the channel with the system; you can't change the importance
+            // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
 //                NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
@@ -377,7 +379,6 @@ public class AlarmEventReceiver extends BroadcastReceiver {
         if (contentText.length() > 15) {
             builder.setStyle(new Notification.BigTextStyle().bigText(contentText.toString()));
         }
-
 
 
         Notification notification = builder.build();
@@ -425,8 +426,6 @@ public class AlarmEventReceiver extends BroadcastReceiver {
         }
 
 
-
-
 //        notification.defaults =
 //        notification.sound = Uri.parse("android.resource://" + context.getPackageName() + "/raw/sound_2");
 
@@ -472,7 +471,7 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                 currencyList.add(eur);
             }
 
-            XBT xbt = new XBT("XBT", "USD");
+            XBT xbt = new XBT("XBT");
             if (localPreferences.getBoolean("XBT_is_active", false)) {
 
                 currencyList.add(xbt);
