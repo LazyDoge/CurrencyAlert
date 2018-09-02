@@ -202,7 +202,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_below="@+id/XBTLinLayout" android:layout_alignParentLeft="true"
+            android:layout_below="@+id/XBTLinLayout"
+        android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true">
         <TextView
                 android:text="@string/eth"
@@ -288,7 +289,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_below="@+id/headerLinLayout" android:layout_alignParentLeft="true"
+            android:layout_below="@+id/headerLinLayout"
+        android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true">
         <TextView
                 android:text="@string/usd"
@@ -353,6 +355,83 @@
             android:layout_toRightOf="@+id/textView3" android:layout_toEndOf="@+id/textView3"
             android:layout_marginLeft="11dp" android:layout_marginStart="11dp" android:id="@+id/textView5"
             android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/customLinLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/divider2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="0.56"
+
+            >
+
+            <Spinner
+                android:id="@+id/spinnerFrom"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="wrap_content" />
+            <Spinner
+                android:id="@+id/spinnerTo"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="wrap_content" />
+
+        </LinearLayout>
+
+
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+
+            android:layout_weight="1"
+            android:id="@+id/editTextCustMin" tools:text="@string/minValue" android:hint="0"
+            android:textSize="14sp"
+            android:layout_width="wrap_content"
+            android:textAlignment="center"
+            />
+        <TextView
+            android:text="@string/current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/custValueText" android:layout_weight="2"
+            tools:text="@string/current"
+
+            android:textAppearance="@style/TextAppearance.AppCompat" android:fontFamily="serif-monospace"
+            android:textAlignment="center" android:textStyle="normal|bold"/>
+        <EditText
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+
+            android:id="@+id/editTextCustMax" tools:text="@string/maxValue" android:hint="99999"
+            android:textSize="14sp"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:textAlignment="center"
+            />
+
+        <Switch
+            android:layout_height="wrap_content" android:id="@+id/switchCust" android:layout_weight="0.3"
+            android:layout_width="wrap_content"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/OILLinLayout"
+        android:background="?android:attr/listDivider"
+        android:layout_alignParentLeft="true" />
 
 
 </RelativeLayout>

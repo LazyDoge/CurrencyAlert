@@ -1,5 +1,6 @@
 package ingenuity.sky.currencyalert;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -45,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
     static EditText ETHEditMin;
     static EditText ETHEditMax;
     static Switch ETHSwitch;
+    static Spinner spinnerFrom;
+    static Spinner spinnerTo;
+
+    static TextView custText;
+    static EditText custEditMin;
+    static EditText custEditMax;
+    static Switch custSwitch;
 
     static TextView textViewMainCurrency;
     static SharedPreferences localPreferences;
@@ -53,14 +61,17 @@ public class MainActivity extends AppCompatActivity {
 
     static AlarmEventReceiver alarmEventReceiver = new AlarmEventReceiver();
 
+    String[] dataFrom = {"RUB", "UAH", "KZT", "BYN", "GBP", "CNY", "JPY", "KRW", "AUD", "USD", "EUR", };
+    String[] dataTo = {"RUB", "UAH", "KZT", "BYN", "GBP", "CNY", "JPY", "KRW", "AUD", "USD", "EUR", };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(ProgressBar.INVISIBLE);
 
 
@@ -73,12 +84,13 @@ public class MainActivity extends AppCompatActivity {
         OILUIInit();
         RUBUIInit();
         ETHUIInit();
+        custUIInit();
 
 
-        textViewMainCurrency = (TextView) findViewById(R.id.textView);
+        textViewMainCurrency = findViewById(R.id.textView);
         textViewMainCurrency.setText(localPreferences.getString("to", "RUB"));
 
-        toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+        toggleButton = findViewById(R.id.toggleButton);
         toggleButton.setChecked(localPreferences.getBoolean("service_on", false));
 
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -99,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
         fadeDataRestore();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,6 +123,38 @@ public class MainActivity extends AppCompatActivity {
 
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
+            }
+        });
+
+        ArrayAdapter<String> adapterFrom = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, dataFrom);
+        ArrayAdapter<String> adapterTo = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, dataTo);
+        adapterFrom.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerFrom = findViewById(R.id.spinnerFrom);
+        spinnerTo = findViewById(R.id.spinnerTo);
+        spinnerFrom.setAdapter(adapterFrom);
+        spinnerTo.setAdapter(adapterTo);
+        spinnerFrom.setSelection(localPreferences.getInt("custom_from", 0));
+        spinnerTo.setSelection(localPreferences.getInt("custom_to", 0));
+        spinnerFrom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                localPreferences.edit().putInt("custom_from", i).apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        spinnerTo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                localPreferences.edit().putInt("custom_to", i).apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
     }
@@ -158,11 +202,19 @@ public class MainActivity extends AppCompatActivity {
         }
         OILText.setText(String.valueOf(oiLvalue));
         OILText.setTextColor(Color.GRAY);
+
+        float custValue = localPreferences.getFloat("custvalue", 0);
+        if (custValue == 0) {
+            custText.setText("####");
+        }
+        custText.setText(String.valueOf(custValue));
+        custText.setTextColor(Color.GRAY);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void usdUIInit() {
-        usdText = (TextView) findViewById(R.id.usdValueText);
-        usdEditMin = (EditText) findViewById(R.id.editTextUsdMin);
+        usdText = findViewById(R.id.usdValueText);
+        usdEditMin = findViewById(R.id.editTextUsdMin);
         float usdmin = localPreferences.getFloat("usdmin", 0);
         usdEditMin.setText(String.valueOf(usdmin));
         usdEditMin.setOnTouchListener(new View.OnTouchListener() {
@@ -173,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        usdEditMax = (EditText) findViewById(R.id.editTextUsdMax);
+        usdEditMax = findViewById(R.id.editTextUsdMax);
         float usdmax = localPreferences.getFloat("usdmax", 99999);
         usdEditMax.setText(String.valueOf(usdmax));
         usdEditMax.setOnTouchListener(new View.OnTouchListener() {
@@ -183,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        usdSwitch = (Switch) findViewById(R.id.switch1);
+        usdSwitch = findViewById(R.id.switch1);
         usdSwitch.setChecked(localPreferences.getBoolean("usd_is_active", false));
 
         usdSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -205,10 +257,60 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void custUIInit() {
+        custText = findViewById(R.id.custValueText);
+        custEditMin = findViewById(R.id.editTextCustMin);
+        float custmin = localPreferences.getFloat("custmin", 0);
+        custEditMin.setText(String.valueOf(custmin));
+        custEditMin.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                custDisactivate(v);
+                return false;
+            }
+        });
+
+        custEditMax = findViewById(R.id.editTextCustMax);
+        float custmax = localPreferences.getFloat("custmax", 99999);
+        custEditMax.setText(String.valueOf(custmax));
+        custEditMax.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                custDisactivate(v);
+                return false;
+            }
+        });
+        custSwitch = findViewById(R.id.switchCust);
+        custSwitch.setChecked(localPreferences.getBoolean("cust_is_active", false));
+
+        custSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    CustomCurrency.isActive = true;
+                    localPreferences.edit().putBoolean("cust_is_active", true).apply();
+                    localPreferences.edit().putFloat("custmin", (float) Double.parseDouble(custEditMin.getText().toString())).apply();
+
+                    localPreferences.edit().putFloat("custmax", (float) Double.parseDouble(custEditMax.getText().toString())).apply();
+
+                } else {
+                    CustomCurrency.isActive = false;
+                    localPreferences.edit().putBoolean("cust_is_active", false).apply();
+
+                }
+            }
+        });
+    }
+
+    private void custDisactivate(View v) {
+        custSwitch.setChecked(false);
+        localPreferences.edit().putBoolean("cust_is_active", false).apply();
+    }
+
 
     private void XBTUIInit() {
-        XBTText = (TextView) findViewById(R.id.XBTValueText);
-        XBTEditMin = (EditText) findViewById(R.id.editTextXBTMin);
+        XBTText = findViewById(R.id.XBTValueText);
+        XBTEditMin = findViewById(R.id.editTextXBTMin);
         float XBTmin = localPreferences.getFloat("XBTmin", 0);
         XBTEditMin.setText(String.valueOf(XBTmin));
         XBTEditMin.setOnTouchListener(new View.OnTouchListener() {
@@ -220,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        XBTEditMax = (EditText) findViewById(R.id.editTextXBTMax);
+        XBTEditMax = findViewById(R.id.editTextXBTMax);
         float XBTmax = localPreferences.getFloat("XBTmax", 99999);
         XBTEditMax.setText(String.valueOf(XBTmax));
         XBTEditMax.setOnTouchListener(new View.OnTouchListener() {
@@ -230,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        XBTSwitch = (Switch) findViewById(R.id.switchXBT);
+        XBTSwitch = findViewById(R.id.switchXBT);
         XBTSwitch.setChecked(localPreferences.getBoolean("XBT_is_active", false));
 
         XBTSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -253,8 +355,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void ETHUIInit() {
-        ETHText = (TextView) findViewById(R.id.ETHValueText);
-        ETHEditMin = (EditText) findViewById(R.id.editTextETHMin);
+        ETHText = findViewById(R.id.ETHValueText);
+        ETHEditMin = findViewById(R.id.editTextETHMin);
         float ETHmin = localPreferences.getFloat("ETHmin", 0);
         ETHEditMin.setText(String.valueOf(ETHmin));
         ETHEditMin.setOnTouchListener(new View.OnTouchListener() {
@@ -266,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        ETHEditMax = (EditText) findViewById(R.id.editTextETHMax);
+        ETHEditMax = findViewById(R.id.editTextETHMax);
         float ETHmax = localPreferences.getFloat("ETHmax", 99999);
         ETHEditMax.setText(String.valueOf(ETHmax));
         ETHEditMax.setOnTouchListener(new View.OnTouchListener() {
@@ -276,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        ETHSwitch = (Switch) findViewById(R.id.switchETH);
+        ETHSwitch = findViewById(R.id.switchETH);
         ETHSwitch.setChecked(localPreferences.getBoolean("ETH_is_active", false));
 
         ETHSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -299,8 +401,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void OILUIInit() {
-        OILText = (TextView) findViewById(R.id.OILValueText);
-        OILEditMin = (EditText) findViewById(R.id.editTextOILMin);
+        OILText = findViewById(R.id.OILValueText);
+        OILEditMin = findViewById(R.id.editTextOILMin);
         float OILmin = localPreferences.getFloat("OILmin", 0);
         OILEditMin.setText(String.valueOf(OILmin));
         OILEditMin.setOnTouchListener(new View.OnTouchListener() {
@@ -312,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        OILEditMax = (EditText) findViewById(R.id.editTextOILMax);
+        OILEditMax = findViewById(R.id.editTextOILMax);
         float OILmax = localPreferences.getFloat("OILmax", 99999);
         OILEditMax.setText(String.valueOf(OILmax));
         OILEditMax.setOnTouchListener(new View.OnTouchListener() {
@@ -322,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        OILSwitch = (Switch) findViewById(R.id.switchOIL);
+        OILSwitch = findViewById(R.id.switchOIL);
         OILSwitch.setChecked(localPreferences.getBoolean("OIL_is_active", false));
 
         OILSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -346,8 +448,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void EURUIInit() {
-        EURText = (TextView) findViewById(R.id.EURValueText);
-        EUREditMin = (EditText) findViewById(R.id.editTextEURMin);
+        EURText = findViewById(R.id.EURValueText);
+        EUREditMin = findViewById(R.id.editTextEURMin);
         float EURmin = localPreferences.getFloat("EURmin", 0);
         EUREditMin.setText(String.valueOf(EURmin));
         EUREditMin.setOnTouchListener(new View.OnTouchListener() {
@@ -359,7 +461,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        EUREditMax = (EditText) findViewById(R.id.editTextEURMax);
+        EUREditMax = findViewById(R.id.editTextEURMax);
         float EURmax = localPreferences.getFloat("EURmax", 99999);
         EUREditMax.setText(String.valueOf(EURmax));
         EUREditMax.setOnTouchListener(new View.OnTouchListener() {
@@ -369,7 +471,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        EURSwitch = (Switch) findViewById(R.id.switchEUR);
+        EURSwitch = findViewById(R.id.switchEUR);
         EURSwitch.setChecked(localPreferences.getBoolean("EUR_is_active", false));
 
         EURSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -392,9 +494,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void RUBUIInit() {
-        RUBText = (TextView) findViewById(R.id.RUBValueText);
+        RUBText = findViewById(R.id.RUBValueText);
 //        RUBText.setBackgroundColor(Color.WHITE);
-        RUBEditMin = (EditText) findViewById(R.id.editTextRUBMin);
+        RUBEditMin = findViewById(R.id.editTextRUBMin);
         float RUBmin = localPreferences.getFloat("RUBmin", 0);
         RUBEditMin.setText(String.valueOf(RUBmin));
         RUBEditMin.setOnTouchListener(new View.OnTouchListener() {
@@ -406,7 +508,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        RUBEditMax = (EditText) findViewById(R.id.editTextRUBMax);
+        RUBEditMax = findViewById(R.id.editTextRUBMax);
         float RUBmax = localPreferences.getFloat("RUBmax", 99999);
         RUBEditMax.setText(String.valueOf(RUBmax));
         RUBEditMax.setOnTouchListener(new View.OnTouchListener() {
@@ -416,7 +518,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        RUBSwitch = (Switch) findViewById(R.id.switchRUB);
+        RUBSwitch = findViewById(R.id.switchRUB);
         RUBSwitch.setChecked(localPreferences.getBoolean("RUB_is_active", false));
 
         RUBSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -485,6 +587,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         localPreferencesInit(getApplicationContext());
 
+        String textRestartService = "Для изменения частоты перезапустите сервис";
         switch (id) {
             case R.id.setRub:
                 textViewMainCurrency.setText("RUB");
@@ -511,32 +614,25 @@ public class MainActivity extends AppCompatActivity {
                 localPreferences.edit().putString("to", "EUR").apply();
                 break;
             case R.id.set1m:
-                localPreferences.edit().putInt("period", 1).apply();
-                item.setChecked(true);
+                changePeriod(item, textRestartService, 1);
                 break;
             case R.id.set5m:
-                localPreferences.edit().putInt("period", 5).apply();
-                item.setChecked(true);
+                changePeriod(item, textRestartService, 5);
                 break;
             case R.id.set15m:
-                localPreferences.edit().putInt("period", 15).apply();
-                item.setChecked(true);
+                changePeriod(item, textRestartService, 15);
                 break;
             case R.id.set30m:
-                localPreferences.edit().putInt("period", 30).apply();
-                item.setChecked(true);
+                changePeriod(item, textRestartService, 30);
                 break;
             case R.id.set1h:
-                localPreferences.edit().putInt("period", 60).apply();
-                item.setChecked(true);
+                changePeriod(item, textRestartService, 60);
                 break;
             case R.id.set2h:
-                localPreferences.edit().putInt("period", 120).apply();
-                item.setChecked(true);
+                changePeriod(item, textRestartService, 120);
                 break;
             case R.id.set3h:
-                localPreferences.edit().putInt("period", 180).apply();
-                item.setChecked(true);
+                changePeriod(item, textRestartService, 180);
                 break;
             case R.id.setSoundOff:
                 localPreferences.edit().putInt("sound", 1).apply();
@@ -572,6 +668,12 @@ public class MainActivity extends AppCompatActivity {
 //        }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void changePeriod(MenuItem item, String textRestartService, int i) {
+        localPreferences.edit().putInt("period", i).apply();
+        item.setChecked(true);
+        Toast.makeText(this, textRestartService, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -630,7 +732,9 @@ public class MainActivity extends AppCompatActivity {
         builder.setTitle("Справка")
                 .setIcon(R.mipmap.ic_launcher)
 
-                .setMessage("RUB - рус. рубль (отображет отношенеие выбранной валюты к рус. рублю, для KZT -  обратное)\r\n" +
+                .setMessage("RUB - рус. рубль (отображет отношенеие выбранной валюты к рус. рублю)\r\n" +
+                        "Внимание: Не забудьте добавить это приложение в исключения вашего менеджера батареи и программы запрещающей автозагрузку для приложений, если таковые имеются.\n"+
+                        "\n" +
                         "UAH - гривна\n" +
                         "BYN - бел. рубль\n" +
                         "KZT - казах. тенге\n" +
@@ -639,8 +743,13 @@ public class MainActivity extends AppCompatActivity {
                         "XBT$ - Bitcoin в долларах США\n" +
                         "ETH$ - Ethereum в долларах США\n" +
                         "OIL$ - нефть Brent в долларах СШA\n" +
-                        "\n" +
-                        "Внимание: Не забудьте добавить это приложение в исключения вашего менеджера батареи и программы запрещающей автозагрузку для приложений, если таковые имеются.")
+//                                "RUB", "UAH", "KZT", "BYN", "USD", "EUR", "GBP", "CNY", "JPY", "KRW", "AUD"
+                        "GBP - анг. фунт стерлингов\n"+
+                        "CNY - китайский юань\n"+
+                        "JPY - японская иена\n"+
+                        "KRW - южнокорейская вона\n"+
+                        "AUD - австралийский доллар"
+                )
                 .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

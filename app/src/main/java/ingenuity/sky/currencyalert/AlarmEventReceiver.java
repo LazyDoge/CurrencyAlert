@@ -1,5 +1,6 @@
 package ingenuity.sky.currencyalert;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -45,6 +46,9 @@ public class AlarmEventReceiver extends BroadcastReceiver {
     static int period;
     static TextView currentTextView;
 
+    String[] dataFrom = {"RUB", "UAH", "KZT", "BYN", "GBP", "CNY", "JPY", "KRW", "AUD", "USD", "EUR", };
+    String[] dataTo = {"RUB", "UAH", "KZT", "BYN", "GBP", "CNY", "JPY", "KRW", "AUD", "USD", "EUR", };
+
     public static TextView getCurrentTextView() {
         return currentTextView;
     }
@@ -69,7 +73,8 @@ public class AlarmEventReceiver extends BroadcastReceiver {
             case "ETH":
                 currentTextView = MainActivity.ETHText;
                 break;
-
+            default:
+                currentTextView = MainActivity.custText;
         }
 
     }
@@ -102,6 +107,7 @@ public class AlarmEventReceiver extends BroadcastReceiver {
         new Thread(new Runnable() {
 
 
+            @SuppressLint("StaticFieldLeak")
             @Override
             public void run() {
 
@@ -126,7 +132,7 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                         currencyList) {
 
                     ExecutorService executorService = Executors.newFixedThreadPool(2);
-                    if (currency instanceof XECurrency) {
+                    if (currency instanceof XECurrency && !(currency instanceof CustomCurrency)) {
                         futures.add(executorService.submit((XECurrency) currency));
                     } else if (currency instanceof XBT) {
                         futures.add(executorService.submit((XBT) currency));
@@ -134,6 +140,8 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                         futures.add(executorService.submit((ETH) currency));
                     } else if (currency instanceof OIL) {
                         futures.add(executorService.submit((OIL) currency));
+                    } else if (currency instanceof CustomCurrency) {
+                        futures.add(executorService.submit((CustomCurrency) currency));
                     }
 
                 }
@@ -157,9 +165,16 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                     } catch (Exception e) {
 
                     }
+                    double lowBorder;
+                    double hiBorder;
 
-                    double lowBorder = localPreferences.getFloat(name + "min", 0);
-                    double hiBorder = localPreferences.getFloat(name + "max", Integer.MAX_VALUE);
+                    if (name.contains("-")) {
+                        lowBorder = localPreferences.getFloat("custmin", 0);
+                        hiBorder = localPreferences.getFloat("custmax", Integer.MAX_VALUE);
+                    } else {
+                        lowBorder = localPreferences.getFloat(name + "min", 0);
+                        hiBorder = localPreferences.getFloat(name + "max", Integer.MAX_VALUE);
+                    }
                     double current = -1;
                     try {
 
@@ -174,7 +189,7 @@ public class AlarmEventReceiver extends BroadcastReceiver {
 
                                 try {
                                     aDouble = futures[0].get();
-                                } catch (InterruptedException | ExecutionException e) {
+                                } catch (InterruptedException | ExecutionException ignored) {
 
                                 }
 
@@ -187,13 +202,14 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                                 super.onProgressUpdate(values);
                                 try {
                                     MainActivity.progressBar.setVisibility(ProgressBar.VISIBLE);
-                                } catch (Exception e) {
+                                } catch (Exception ignored) {
 
                                 }
 
                             }
 
 
+                            @SuppressLint("DefaultLocale")
                             @Override
                             protected void onPostExecute(Void aVoid) {
                                 super.onPostExecute(aVoid);
@@ -206,7 +222,8 @@ public class AlarmEventReceiver extends BroadcastReceiver {
 
                                     } else {
 
-                                        if (aDouble < 1) {
+//                                        if (aDouble < 1) {
+                                        if (false) {
                                             currentTextView.setText(String.format("%(.4f", 1.0 / aDouble));
 
                                         } else {
@@ -216,7 +233,7 @@ public class AlarmEventReceiver extends BroadcastReceiver {
 
                                     }
                                     MainActivity.progressBar.setVisibility(ProgressBar.INVISIBLE);
-                                } catch (Exception e) {
+                                } catch (Exception ignored) {
 
                                 }
 
@@ -262,7 +279,7 @@ public class AlarmEventReceiver extends BroadcastReceiver {
 
                     if (aDoubleD < lowBorder || aDoubleD > hiBorder) {
                         notificationNeeded = true;
-                        if (aDoubleD < 1) {
+                        if (false) {
                             contentText.append(name.toUpperCase()).append(" = ").append(String.format("%(.4f", 1.0 / aDoubleD)).append("\r\n");
 
                         } else {
@@ -453,7 +470,7 @@ public class AlarmEventReceiver extends BroadcastReceiver {
 
     private void currencyListInit(Context context) {
         currencyList = new ArrayList<>();
-        String to = "RUB";
+        String to;
         try {
             localPreferencesInit(context);
             to = localPreferences.getString("to", "RUB");
@@ -495,6 +512,13 @@ public class AlarmEventReceiver extends BroadcastReceiver {
 
                 currencyList.add(eth);
             }
+
+            CustomCurrency cust = new CustomCurrency(dataFrom[localPreferences.getInt("custom_from", 0)], dataTo[localPreferences.getInt("custom_to", 0)]);
+            if (localPreferences.getBoolean("cust_is_active", false)) {
+
+                currencyList.add(cust);
+            }
+
         } catch (Exception e) {
             //nop
         }
