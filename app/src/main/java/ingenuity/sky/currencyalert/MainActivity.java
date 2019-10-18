@@ -257,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void custUIInit() {
         custText = findViewById(R.id.custValueText);
         custEditMin = findViewById(R.id.editTextCustMin);
@@ -308,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     private void XBTUIInit() {
         XBTText = findViewById(R.id.XBTValueText);
         XBTEditMin = findViewById(R.id.editTextXBTMin);
@@ -354,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void ETHUIInit() {
         ETHText = findViewById(R.id.ETHValueText);
         ETHEditMin = findViewById(R.id.editTextETHMin);
@@ -400,6 +403,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void OILUIInit() {
         OILText = findViewById(R.id.OILValueText);
         OILEditMin = findViewById(R.id.editTextOILMin);
@@ -447,6 +451,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     private void EURUIInit() {
         EURText = findViewById(R.id.EURValueText);
         EUREditMin = findViewById(R.id.editTextEURMin);
@@ -493,6 +498,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void RUBUIInit() {
         RUBText = findViewById(R.id.RUBValueText);
 //        RUBText.setBackgroundColor(Color.WHITE);

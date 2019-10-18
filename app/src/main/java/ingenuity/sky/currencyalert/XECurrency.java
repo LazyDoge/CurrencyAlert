@@ -36,8 +36,11 @@ public class XECurrency extends  Currency implements Callable<Double> {
 //            resultAmountString = doc.getElementsByClass("uccResultAmount").first().text();
 //            resultAmountString = resultAmountString.replace(",", "");
 
-            resultAmountString = doc.getElementsByClass("text-success").first().text();
-            resultAmountString = resultAmountString.replace(",", "").substring(0, resultAmountString.length()-4);
+//            resultAmountString = doc.getElementsById("text-success").first().text();
+            resultAmountString = doc.getElementById("rate").attr("value");
+//            resultAmountString = doc.getElementById("rate")
+            resultAmountString = resultAmountString.replace(",", "");
+//                    .substring(0, resultAmountString.length()-4);
 
             resultAmount = Double.parseDouble(resultAmountString);
         } catch (Exception e) {

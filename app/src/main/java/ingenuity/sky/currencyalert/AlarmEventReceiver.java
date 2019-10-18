@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -107,13 +108,14 @@ public class AlarmEventReceiver extends BroadcastReceiver {
         new Thread(new Runnable() {
 
 
-            @SuppressLint("StaticFieldLeak")
+            @SuppressLint({"StaticFieldLeak", "WakelockTimeout"})
             @Override
             public void run() {
 
 
                 PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "currWakeLock");
+                assert powerManager != null;
+                @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "currWakeLock");
                 wakeLock.acquire();
 
                 currencyListInit(context);
@@ -274,7 +276,11 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                         continue;
 
                     } else {
-                        localPreferences.edit().putFloat(name + "value", (float) aDoubleD).apply();
+                        String putValue = name;
+                        if (putValue.contains("-")) {
+                            putValue = "cust";
+                        }
+                        localPreferences.edit().putFloat(putValue + "value", (float) aDoubleD).apply();
                     }
 
                     if (aDoubleD < lowBorder || aDoubleD > hiBorder) {
@@ -362,18 +368,28 @@ public class AlarmEventReceiver extends BroadcastReceiver {
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notficationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         Resources resources = context.getResources();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification.Builder builder = null;
+        Notification.Builder builder;
+        localPreferencesInit(context);
+        int soundGetter = localPreferences.getInt("sound", 2);
+        int vibroGetter = localPreferences.getInt("vibro", 2);
+        int diodGetter = localPreferences.getInt("diod", 1);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
             CharSequence name = "signal $O$";
-            String description = "testChannell for 26+";
+            String description = "testChannel for 26+";
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                    .build();
+            channel.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/raw/sound_2"), audioAttributes);
 
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
 //                NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            assert notificationManager != null;
             notificationManager.createNotificationChannel(channel);
 
 
@@ -392,9 +408,14 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                 .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentText(contentText.toString())
+                .setSound(Uri.parse("android.resource://" + context.getPackageName() + "/raw/sound_2"))
                 .setContentTitle(contentTitle);
+
         if (contentText.length() > 15) {
             builder.setStyle(new Notification.BigTextStyle().bigText(contentText.toString()));
+        }
+        if (soundGetter == 2) {
+            builder.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/raw/sound_2"));
         }
 
 
@@ -410,20 +431,7 @@ public class AlarmEventReceiver extends BroadcastReceiver {
 //        }
 
 //        System.out.println(localPreferences.toString());
-        localPreferencesInit(context);
-        int soundGetter = localPreferences.getInt("sound", 2);
-        int vibroGetter = localPreferences.getInt("vibro", 2);
-        int diodGetter = localPreferences.getInt("diod", 1);
 
-
-        switch (soundGetter) {
-            case 2:
-                notification.sound = Uri.parse("android.resource://" + context.getPackageName() + "/raw/sound_2");
-                break;
-            case 3:
-                notification.defaults = Notification.DEFAULT_SOUND;
-                break;
-        }
 
         switch (vibroGetter) {
             case 2:
@@ -453,7 +461,7 @@ public class AlarmEventReceiver extends BroadcastReceiver {
 
     private void miuiIconNormalize(Notification notification) {
         try {
-            Class miuiNotificationClass = Class.forName("android.app.MiuiNotification");
+            @SuppressLint("PrivateApi") Class miuiNotificationClass = Class.forName("android.app.MiuiNotification");
             Object miuiNotification = miuiNotificationClass.newInstance();
             Field field = miuiNotification.getClass().getDeclaredField("customizedIcon");
             field.setAccessible(true);
