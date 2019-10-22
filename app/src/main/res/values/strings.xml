@@ -43,4 +43,10 @@
     <string name="strDiodOn">Вкл</string>
     <string name="strDiodOff">Выкл</string>
     <string name="strExit">EXIT</string>
+    <string name="failure_period">Оповещать о неудаче через:</string>
+    <string name="eight_hours">8 часов</string>
+    <string name="twenty_four_hours">24 часа</string>
+    <string name="seventy_two_hours">72 часа</string>
+    <string name="time_in_notification">Время в оповещении</string>
+    <string name="add">Добавить</string>
 </resources>

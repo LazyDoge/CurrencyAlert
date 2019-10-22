@@ -241,15 +241,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/switchETH" android:layout_weight="0.3"/>
     </LinearLayout>
+
     <ToggleButton
-            android:text="ToggleButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:textOff="@string/toggle_off" android:textOn="@string/toggle_on"
-            android:id="@+id/toggleButton"/>
+        android:id="@+id/toggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:text="ToggleButton"
+        android:textOff="@string/toggle_off"
+        android:textOn="@string/toggle_on" />
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"

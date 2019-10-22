@@ -20,16 +20,13 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.PowerManager;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -283,6 +280,7 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                         localPreferences.edit().putFloat(putValue + "value", (float) aDoubleD).apply();
                     }
 
+
                     if (aDoubleD < lowBorder || aDoubleD > hiBorder) {
                         notificationNeeded = true;
                         if (false) {
@@ -311,10 +309,17 @@ public class AlarmEventReceiver extends BroadcastReceiver {
                     period = localPreferences.getInt("period", 180);
                 }
 
-                if (failCounter > ((7 * 60) / period)) {
+                int failureNotificationPeriod = localPreferences.getInt("failure_notification_period", 8);
+
+                if (failCounter > ((failureNotificationPeriod * 60) / period)) {
                     notificationNeeded = true;
-                    contentText = new StringBuilder("Не удается обновить данные длительное время.");
+                    contentText = new StringBuilder("Не удается обновить данные длительное время.").append("\r\n");
                     contentTitle = "Неудача!";
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                        localPreferences.getBoolean(MainActivity.SHOW_TIME_IN_NOTIFICATION, false)) {
+                    contentText.append("\r\n")
+                            .append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd MMM HH:mm")));
                 }
 
                 if (notificationNeeded) {

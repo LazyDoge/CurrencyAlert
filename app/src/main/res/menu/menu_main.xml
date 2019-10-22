@@ -1,60 +1,124 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:context="ingenuity.sky.currencyalert.MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ingenuity.sky.currencyalert.MainActivity">
     <item android:title="@string/action_settings1">
-        <menu
-        >
+        <menu>
 
-            <item android:title="@string/rub" android:id="@+id/setRub"/>
-            <item android:title="@string/hrivna" android:id="@+id/setHriv"/>
-            <item android:title="@string/bella_rubl" android:id="@+id/setBel"/>
-            <item android:title="@string/kazah_tenge" android:id="@+id/setKZT"/>
-            <item android:title="@string/usd" android:id="@+id/setUsd"/>
-            <item android:title="@string/eur" android:id="@+id/setEur"/>
+            <item
+                android:id="@+id/setRub"
+                android:title="@string/rub" />
+            <item
+                android:id="@+id/setHriv"
+                android:title="@string/hrivna" />
+            <item
+                android:id="@+id/setBel"
+                android:title="@string/bella_rubl" />
+            <item
+                android:id="@+id/setKZT"
+                android:title="@string/kazah_tenge" />
+            <item
+                android:id="@+id/setUsd"
+                android:title="@string/usd" />
+            <item
+                android:id="@+id/setEur"
+                android:title="@string/eur" />
 
         </menu>
     </item>
     <item android:title="@string/action_settings2">
-        <menu
-        >
+        <menu>
             <group android:checkableBehavior="single">
-            <item android:title="@string/every_1_min" android:id="@+id/set1m"/>
-            <item android:title="@string/every_5_min" android:id="@+id/set5m"/>
-            <item android:title="@string/every_15_min" android:id="@+id/set15m"/>
-            <item android:title="@string/every_30_min" android:id="@+id/set30m"/>
-            <item android:title="@string/every_hour" android:id="@+id/set1h"/>
-            <item android:title="@string/every_2_hour" android:id="@+id/set2h"/>
-            <item android:title="@string/every_3_hour" android:id="@+id/set3h"/>
+                <item
+                    android:id="@+id/set1m"
+                    android:title="@string/every_1_min" />
+                <item
+                    android:id="@+id/set5m"
+                    android:title="@string/every_5_min" />
+                <item
+                    android:id="@+id/set15m"
+                    android:title="@string/every_15_min" />
+                <item
+                    android:id="@+id/set30m"
+                    android:title="@string/every_30_min" />
+                <item
+                    android:id="@+id/set1h"
+                    android:title="@string/every_hour" />
+                <item
+                    android:id="@+id/set2h"
+                    android:title="@string/every_2_hour" />
+                <item
+                    android:id="@+id/set3h"
+                    android:title="@string/every_3_hour" />
             </group>
         </menu>
     </item>
-    <item android:title="@string/strExit" android:onClick="getHelpClick"
-          android:icon="@android:drawable/ic_menu_help" app:showAsAction="ifRoom"/>
     <item android:title="@string/Settings">
-        <menu >
-            <item android:title="@string/stringSound" >
+        <menu>
+            <item android:title="@string/stringSound">
                 <menu>
-                    <item android:title="@string/stringSoundNon" android:id="@+id/setSoundOff"/>
-                    <item android:title="@string/stringSoundCoin" android:id="@+id/setSoundCoin"/>
-                    <item android:title="@string/stringSoundStandard" android:id="@+id/setSoundStan"/>
+                    <item
+                        android:id="@+id/setSoundOff"
+                        android:title="@string/stringSoundNon" />
+                    <item
+                        android:id="@+id/setSoundCoin"
+                        android:title="@string/stringSoundCoin" />
+                    <item
+                        android:id="@+id/setSoundStan"
+                        android:title="@string/stringSoundStandard" />
                 </menu>
             </item>
 
-            <item android:title="@string/stringVibro" >
+            <item android:title="@string/stringVibro">
                 <menu>
-                    <item android:title="@string/stringNoVibro" android:id="@+id/setVibroOff"/>
-                    <item android:title="@string/strShortVibro" android:id="@+id/setVibroShort"/>
-                    <item android:title="@string/strStanVibro" android:id="@+id/setVibroStan"/>
+                    <item
+                        android:id="@+id/setVibroOff"
+                        android:title="@string/stringNoVibro" />
+                    <item
+                        android:id="@+id/setVibroShort"
+                        android:title="@string/strShortVibro" />
+                    <item
+                        android:id="@+id/setVibroStan"
+                        android:title="@string/strStanVibro" />
                 </menu>
             </item>
-            <item android:title="@string/strDiod" >
+            <item android:title="@string/strDiod">
                 <menu>
-                    <item android:title="@string/strDiodOn" android:id="@+id/setDiodOn"/>
-                    <item android:title="@string/strDiodOff" android:id="@+id/setDiodOff"/>
+                    <item
+                        android:id="@+id/setDiodOn"
+                        android:title="@string/strDiodOn" />
+                    <item
+                        android:id="@+id/setDiodOff"
+                        android:title="@string/strDiodOff" />
 
                 </menu>
             </item>
         </menu>
     </item>
+    <item android:title="@string/failure_period">
+        <menu>
+            <group android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/menu_failure_notif_8"
+                    android:title="@string/eight_hours" />
+                <item
+                    android:id="@+id/menu_failure_notif_24"
+                    android:title="@string/twenty_four_hours" />
+                <item
+                    android:id="@+id/menu_failure_notif_72"
+                    android:title="@string/seventy_two_hours" />
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/switch_time_in_notif"
+        android:title="@string/add"
+        app:actionLayout="@layout/switch_item"
+        app:showAsAction="always" />
+    <item
+        android:icon="@android:drawable/ic_menu_help"
+        android:onClick="getHelpClick"
+        android:title="@string/strExit"
+        app:showAsAction="ifRoom" />
 </menu>

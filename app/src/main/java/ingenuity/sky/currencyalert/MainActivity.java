@@ -8,19 +8,28 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.*;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String SHOW_TIME_IN_NOTIFICATION = "show_time_in_notification";
+    public static final String FAILURE_NOTIFICATION_PERIOD = "failure_notification_period";
     static ProgressBar progressBar;
     static TextView usdText;
     static EditText usdEditMin;
@@ -157,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     private void fadeDataRestore() {
@@ -582,7 +592,44 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
         }
+
+        setFailurePeriodNotificationItemMenuChecked(menu);
+
+        setShowTimeInNotificationPropertyHandler(menu);
         return true;
+    }
+
+    private void setShowTimeInNotificationPropertyHandler(Menu menu) {
+        Switch timeSwitch =
+                menu.findItem(R.id.switch_time_in_notif).getActionView().findViewById(R.id.switch_time_id);
+
+        timeSwitch.setChecked(localPreferences.getBoolean(SHOW_TIME_IN_NOTIFICATION, false));
+
+        timeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (!isChecked) {
+                    localPreferences.edit().putBoolean(SHOW_TIME_IN_NOTIFICATION, false).apply();
+                } else {
+                    localPreferences.edit().putBoolean(SHOW_TIME_IN_NOTIFICATION, true).apply();
+                }
+            }
+        });
+    }
+
+    private void setFailurePeriodNotificationItemMenuChecked(Menu menu) {
+        int failureNotificationPeriod = localPreferences.getInt(FAILURE_NOTIFICATION_PERIOD, 8);
+        switch (failureNotificationPeriod) {
+            case 8:
+                menu.getItem(3).getSubMenu().getItem(0).setChecked(true);
+                break;
+            case 24:
+                menu.getItem(3).getSubMenu().getItem(1).setChecked(true);
+                break;
+            case 72:
+                menu.getItem(3).getSubMenu().getItem(2).setChecked(true);
+                break;
+        }
     }
 
     @Override
@@ -665,6 +712,19 @@ public class MainActivity extends AppCompatActivity {
             case R.id.setDiodOn:
                 localPreferences.edit().putInt("diod", 2).apply();
                 break;
+            case R.id.menu_failure_notif_8:
+                localPreferences.edit().putInt(FAILURE_NOTIFICATION_PERIOD, 8).apply();
+                item.setChecked(true);
+                break;
+            case R.id.menu_failure_notif_24:
+                localPreferences.edit().putInt(FAILURE_NOTIFICATION_PERIOD, 24).apply();
+                item.setChecked(true);
+                break;
+            case R.id.menu_failure_notif_72:
+                localPreferences.edit().putInt(FAILURE_NOTIFICATION_PERIOD, 72).apply();
+                item.setChecked(true);
+                break;
+
         }
 
 
@@ -754,7 +814,14 @@ public class MainActivity extends AppCompatActivity {
                         "CNY - китайский юань\n"+
                         "JPY - японская иена\n"+
                         "KRW - южнокорейская вона\n"+
-                        "AUD - австралийский доллар"
+                        "AUD - австралийский доллар\n\n"+
+
+                        "Переключатель слева от \"?\" добавляет время последнего оповещения в текст " +
+                                "оповещения.\n\n"+
+
+                        "Настройка \"Оповещать о неудаче через:\" - позволяет выбрать период времени, " +
+                                "в течение которого возможны последовательные неудачные попытки " +
+                                "получить информацию, без оповещения об этом."
                 )
                 .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                     @Override
