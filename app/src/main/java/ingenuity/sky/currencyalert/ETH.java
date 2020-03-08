@@ -19,16 +19,16 @@ public class ETH extends Currency implements Callable<Double> {
     public Double call() throws Exception {
 
         double resultAmount = -1;
-        Document doc = Jsoup.connect("https://ru.investing.com/currencies/eth-usd").userAgent(" Chrome/58.0.3029.81").timeout(5000).get();
-        String resultAmountString = null;
         try {
-            resultAmountString = doc.getElementsByClass("arial_26 inlineblock pid-997650-last")
+            Document doc = Jsoup.connect("https://ru.investing.com/crypto/ethereum/eth-usd").userAgent(" Chrome/58.0.3029.81").timeout(5000).get();
+            String resultAmountString = null;
+
+            resultAmountString = doc.getElementsByClass("arial_26 inlineblock pid-1058142-last")
                     .first().text();
             resultAmountString = resultAmountString.replace(".", "");
             resultAmountString = resultAmountString.replace(",", ".");
             resultAmount = Double.parseDouble(resultAmountString);
-        } catch (Exception e) {
-            resultAmount = -1;
+        } catch (Exception ignored) {
         }
 
         return resultAmount;

@@ -19,19 +19,15 @@ public class OIL extends Currency implements Callable<Double> {
     @Override
     public Double call() throws Exception {
         double resultAmount = -1;
-        Document doc = Jsoup.connect("http://www.finanz.ru/birzhevyye-tovary/grafik-v-realnom-vremeni/neft-cena?type=Brent").userAgent(" Chrome/58.0.3029.81").timeout(5000).get();
-        String resultAmountString = null;
         try {
+            Document doc = Jsoup.connect("https://www.finanz.ru/birzhevyye-tovary/grafik-v-realnom-vremeni/neft-cena?type=Brent").userAgent(" Chrome/58.0.3029.81").timeout(5000).get();
+            String resultAmountString = null;
 
             resultAmountString = doc.getElementsByAttribute("data-animation").first().text();
             resultAmountString = resultAmountString.replace(",", ".");
             resultAmount = Double.parseDouble(resultAmountString);
-        } catch (Exception e) {
-            resultAmount = -1;
+        } catch (Exception ignored) {
         }
-
-
-
 
         return resultAmount;
     }
