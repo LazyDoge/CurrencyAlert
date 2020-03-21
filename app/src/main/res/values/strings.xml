@@ -49,4 +49,13 @@
     <string name="seventy_two_hours">72 часа</string>
     <string name="time_in_notification">Время в оповещении</string>
     <string name="add">Добавить</string>
+    <string name="covid_label">COVID 19 статистика</string>
+    <string name="scope">Область</string>
+    <string name="number_of_cases">Число случаев</string>
+    <string name="deaths">Смертей</string>
+    <string name="healed">Вызд.</string>
+    <string name="mortality_rate">Смертность</string>
+    <string name="whole_world">Мир</string>
+    <string name="unknown">\???</string>
+    <string name="russia">Россия</string>
 </resources>

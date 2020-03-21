@@ -435,5 +435,196 @@
         android:background="?android:attr/listDivider"
         android:layout_alignParentLeft="true" />
 
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="379dp"
+        android:layout_height="310dp"
+        android:layout_below="@id/customLinLayout">
+
+        <TextView
+            android:id="@+id/covidHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/covid_label"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+        <TableLayout
+            android:layout_width="377dp"
+            android:layout_height="254dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/covidHeader"
+            app:layout_constraintVertical_bias="0.0">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <TextView
+                    android:id="@+id/thead1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/scope"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1.5"/>
+
+                <TextView
+                    android:id="@+id/thead2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/number_of_cases"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/thead3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/deaths"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/thead4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/healed"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/thead5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="@string/mortality_rate"
+                    android:textSize="12sp" />
+
+            </TableRow>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:background="?android:attr/listDivider" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/trow1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/whole_world"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1.5"/>
+
+                <TextView
+                    android:id="@+id/trow2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unknown"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/trow3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unknown"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/trow4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unknown"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/trow5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unknown"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"/>
+
+            </TableRow>
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="?android:attr/listDivider" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+<!--                <TextView-->
+<!--                    android:id="@+id/trow21"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/russia"-->
+<!--                    android:gravity="center_horizontal"-->
+<!--                    android:layout_weight="1"/>-->
+                <Spinner
+                    android:id="@+id/spinnerCountry"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:layout_width="0dp" />
+
+                <TextView
+                    android:id="@+id/trow22"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unknown"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/trow23"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unknown"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/trow24"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unknown"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/trow25"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unknown"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"/>
+
+            </TableRow>
+
+
+        </TableLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+
 
 </RelativeLayout>

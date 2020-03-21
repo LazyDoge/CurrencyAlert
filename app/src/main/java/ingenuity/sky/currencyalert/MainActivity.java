@@ -27,6 +27,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import ingenuity.sky.currencyalert.constants.LocalPreferencesKeys;
+import ingenuity.sky.currencyalert.sars.Controller;
+
 public class MainActivity extends AppCompatActivity {
     public static final String SHOW_TIME_IN_NOTIFICATION = "show_time_in_notification";
     public static final String FAILURE_NOTIFICATION_PERIOD = "failure_notification_period";
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     static Switch custSwitch;
 
     static TextView textViewMainCurrency;
-    static SharedPreferences localPreferences;
+    SharedPreferences localPreferences;
     static ToggleButton toggleButton;
 
 
@@ -72,7 +75,12 @@ public class MainActivity extends AppCompatActivity {
 
     String[] dataFrom = {"RUB", "UAH", "KZT", "BYN", "GBP", "CNY", "JPY", "KRW", "AUD", "USD", "EUR", };
     String[] dataTo = {"RUB", "UAH", "KZT", "BYN", "GBP", "CNY", "JPY", "KRW", "AUD", "USD", "EUR", };
+    public static String[] dataCountry = {"Russia", "Ukraine", "Kazakhstan", "Belarus", "USA", "China", "italy", "Germany", "India" };
 
+
+    public SharedPreferences getLocalPreferences() {
+        return localPreferences;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +138,9 @@ public class MainActivity extends AppCompatActivity {
                     alarmEventReceiver.onReceive(getApplicationContext(), new Intent(getApplicationContext(), MainActivity.class));
                 }
 
+
+                Controller controller = new Controller(MainActivity.this);
+                controller.start();
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
             }
@@ -139,11 +150,8 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapterTo = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, dataTo);
         adapterFrom.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerFrom = findViewById(R.id.spinnerFrom);
-        spinnerTo = findViewById(R.id.spinnerTo);
         spinnerFrom.setAdapter(adapterFrom);
-        spinnerTo.setAdapter(adapterTo);
         spinnerFrom.setSelection(localPreferences.getInt("custom_from", 0));
-        spinnerTo.setSelection(localPreferences.getInt("custom_to", 0));
         spinnerFrom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -155,6 +163,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        spinnerTo = findViewById(R.id.spinnerTo);
+        spinnerTo.setAdapter(adapterTo);
+        spinnerTo.setSelection(localPreferences.getInt("custom_to", 0));
         spinnerTo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -167,6 +178,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        handleCoronaCountrySpinner();
+
+    }
+
+    private void handleCoronaCountrySpinner() {
+        ArrayAdapter<String> adapterCountry = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, dataCountry);
+        Spinner spinnerCountry = findViewById(R.id.spinnerCountry);
+        spinnerCountry.setAdapter(adapterCountry);
+        spinnerCountry.setSelection(localPreferences.getInt(LocalPreferencesKeys.COUNTRY, 0));
+        spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                localPreferences.edit().putInt(LocalPreferencesKeys.COUNTRY, position).apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void fadeDataRestore() {
